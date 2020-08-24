@@ -1,33 +1,42 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './NewPost.css';
+import {Redirect} from 'react-router-dom';
 
 class NewPost extends Component {
     state = {
         title: '',
         content: '',
-        author: 'Max'
+        author: 'Max',
+        submitted: false
     }
     postdataHandler=()=>{
         const data={
             title: this.state.title,
             body:this.state.content,
             author: this.state.author
-
         };
         axios.post('/posts',data).then(response=>{
-
         console.log(response);
+        //ne redirectioneaza catre o ruta noua atunci cand  se realizeaza trimiterea cu success
+        // this.props.history.push('/posts');
+        this.props.history.replace('/posts');
+        //this.setState({submitted: true});
         });
     }
-
     componentDidMount(){
+        //{ if auth => this. props.history.replice('/posts');}
         console.log(this.props);
     }
 
     render () {
+        let redirect= null;
+        if(this.state.submitted){
+            redirect= <Redirect to="/posts"/>;
+        }
         return (
             <div className="NewPost">
+               {redirect}
                 <h1>Add a Post</h1>
                 <label>Title</label>
                 <input type="text" value={this.state.title} onChange={(event) => this.setState({title: event.target.value})} />
